@@ -1,8 +1,8 @@
-#Version 0.5.1 - 06-12-2018
+#Version 0.7.0 - 31-12-2018
 #Makefile for Windows and Linux developed by Cristobal Medrano Alvarado.
 #Makefile para Windows y Linux desarrollado por Cristobal Medrano Alvardo.
 
-#Falta corregir la salida de archivos a otra carpeta.
+# Archivo main para funcion principal, archivos de salida en build.
 
 #The operating system is checked.
 #Se verifica el sistema operativo.
@@ -22,7 +22,7 @@ ifeq ($(OS_detected), Windows)
 	EXECUTE = $(EXECUTABLE)
 	DEBUGEXECUTE = debug_$(EXECUTABLE)
     REMOVE = -del
-	FILES = $(SOURCES)\*.o 
+	FILES = $(BUILD)\*.o 
 
 endif
 ifeq ($(OS_detected), Linux)
@@ -31,55 +31,63 @@ ifeq ($(OS_detected), Linux)
 	EXECUTE = ./$(EXECUTABLE)
 	DEBUGEXECUTE = ./debug_$(EXECUTABLE)
     REMOVE = -rm -f
-	FILES = $(SOURCES)/*.o 
+	FILES = $(BUILD)/*.o 
 endif
 
 #Modules and headers folders.
 #Carpeta de modulos y cabeceras.
-HEADERS = headers
-SOURCES = sources
+HEADERS = include
+SOURCES = src
 BUILD = build
 
 #Variables
 CC = gcc
-OPTS = -Wall -g3 -I $(HEADERS)/
+HDRS = $(HEADERS)/
+BLDS = $(BUILD)/
+OPTS = -Wall -g3 -I
 DEBUG = -D DEBUG
 
 SRCS = $(wildcard $(SOURCES)/*.c)
-OBJS = $(patsubst %.c,%.o,$(SRCS))
-DOBJS = $(patsubst %.c,%_debug.o,$(SRCS))
-MAIN = $(patsubst %.c,%.o,$(wildcard *.c))
+OBJS = $(subst $(SOURCES)/, $(BUILD)/,$(patsubst %.c,%.o,$(SRCS)))
+DOBJS = $(subst $(SOURCES)/, $(BUILD)/,$(patsubst %.c,%_debug.o,$(SRCS)))
+MAIN = main
+DMAIN = $(MAIN)_debug
 
 .SILENT: all debug clean $(EXECUTABLE) debug_$(EXECUTABLE)
 all: $(EXECUTABLE)
 
-execute: $(EXECUTABLE)
-	$(EXECUTABLE)
-
-#debug_execute: debug_$(EXECUTABLE)
-#	debug_$(EXECUTABLE)
-
-$(EXECUTABLE): $(OBJS) $(MAIN)
+# Normal compilation
+$(EXECUTABLE): $(OBJS) $(BUILD)/$(MAIN).o
 	$(CC) -o $@ $^ 
 	echo Compilation done. Executable: $(EXECUTE)
 
+$(BUILD)/%.o: $(SOURCES)/%.c
+	$(CC) $(OPTS) $(HDRS) -c -o $@ $<
+
+$(BUILD)/$(MAIN).o: $(MAIN).c
+	$(CC) $(OPTS) $(HDRS) -c -o $(BUILD)/$(MAIN).o $(MAIN).c
+# End normal compilation
+
+# Debug compilation
 debug: debug_$(EXECUTABLE)
 
-debug_$(EXECUTABLE): $(DOBJS) $(MAIN)
+debug_$(EXECUTABLE): $(DOBJS) $(BUILD)/$(DMAIN).o
 	$(CC) -o $@ $^ 
 	echo Compilation done. Executable: $(DEBUGEXECUTE)
 
-$(SOURCES)/%.o: $(SOURCES)/%.c
-	$(CC) $(OPTS) -c -o $@ $<
+$(BUILD)/%_debug.o: $(SOURCES)/%.c
+	$(CC) $(OPTS) $(HDRS) $(DEBUG) -c -o $@ $<
 
-$(SOURCES)/%_debug.o: $(SOURCES)/%.c
-	$(CC) $(OPTS) $(DEBUG) -c -o $@ $<
+$(BUILD)/$(DMAIN).o: $(MAIN).c
+	$(CC) $(OPTS) $(HDRS) $(DEBUG) -c -o $(BUILD)/$(DMAIN).o $(MAIN).c
+# End debug compilation.
 
-%.o: %.c
-	$(CC) $(OPTS) -c -o $@ $<
+#Default files compilation
+#%.o: %.c
+#	$(CC) $(OPTS) -c -o $@ $<
 
 .PHONY: clean
 clean:
-	$(REMOVE) $(FILES) $(MAIN)
+	$(REMOVE) $(FILES)
 	$(REMOVE) $(EXECUTABLE) debug_$(EXECUTABLE)
 	echo Full wipe.
