@@ -17,7 +17,7 @@ Centers* createCenters();
 int* setGatheringCenters(int* currentList, int pos, int distance, int ton);
 Centers* setNewCenters(Centers* currentCenters, int numberOfCenters, int incineratorsAvailable, int subsidy, int* gatheringCenters);
 int closeFile(FILE* file, const char* fileName);
-Centers* getCenters(const char* inputFile, const char* outputFile);
+Centers* getCenters(const char* inputFile);
 
 void freeCenters(Centers* centers);
 //void saveFile(invHistory* solution);

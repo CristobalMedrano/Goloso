@@ -8,7 +8,7 @@ int main(int argc, char const *argv[])
 {
     if (3 == argc) 
     {
-        mainMenuGoloso(argv[1], argv[2]);
+        mainMenu(argv[1], argv[2]);
     }
     else
     {

@@ -146,7 +146,7 @@ int closeFile(FILE* file, const char* fileName)
             el numero de inversiones y la lista de inversiones a
             realizar con sus respectivas utilidades.
 */
-Centers* getCenters(const char* inputFile, const char* outputFile)
+Centers* getCenters(const char* inputFile)
 {
     if(NULL != inputFile)
     {

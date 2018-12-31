@@ -13,7 +13,7 @@
 
 */
 
-void mainMenuGoloso(const char* inputFile, const char* outputFile)
+void mainMenu(const char* inputFile, const char* outputFile)
 {
     int option;
     do
@@ -24,7 +24,7 @@ void mainMenuGoloso(const char* inputFile, const char* outputFile)
         switch(option)
         {
             case GOLOSO:
-                runGoloso(inputFile, outputFile);
+                initProgram(inputFile, outputFile);
                 pressToContinue();
                 break;
   
@@ -47,9 +47,10 @@ void mainMenuGoloso(const char* inputFile, const char* outputFile)
                    esos datos en otro archivo.
     Salida: Vacia
 */
-void runGoloso(const char* inputFile, const char* outputFile)
+void initProgram(const char* inputFile, const char* outputFile)
 {
-    Centers* newCenters = getCenters(inputFile, outputFile);
+    // Obtiene los datos del archivo de entrada.
+    Centers* newCenters = getCenters(inputFile);
     
     if (NULL != newCenters) 
     {
