@@ -13,8 +13,7 @@
 
 */
 
-
-void initGoloso(const char* inputFile, const char* outputFile)
+void mainMenuGoloso(const char* inputFile, const char* outputFile)
 {
     int option;
     do

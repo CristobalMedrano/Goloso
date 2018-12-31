@@ -1,7 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <structs.h>
+#include <main.h>
 #include <goloso.h>
+
+// Funcion principal.
+int main(int argc, char const *argv[])
+{
+    if (3 == argc) 
+    {
+        mainMenuGoloso(argv[1], argv[2]);
+    }
+    else
+    {
+        errorMessage();
+    }
+    return 0;
+}
 
 void errorMessage()
 {
@@ -27,18 +41,4 @@ void errorMessage()
         #endif
     #endif
     printf("\n\n");
-}
-
-// Funcion principal.
-int main(int argc, char const *argv[])
-{
-    if (3 == argc) 
-    {
-        initGoloso(argv[1], argv[2]);
-    }
-    else
-    {
-        errorMessage();
-    }
-    return 0;
 }

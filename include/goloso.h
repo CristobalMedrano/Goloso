@@ -9,6 +9,6 @@
 #define YES 1
 #define NO 0
 
-void initGoloso(const char* inputFile, const char* outputFile);
+void mainMenuGoloso(const char* inputFile, const char* outputFile);
 void runGoloso(const char* inputFile, const char* outputFile);
 #endif
