@@ -1,13 +1,21 @@
 #ifndef _STRUCTS_H
 #define _STRUCTS_H
 
-typedef struct Centers
+typedef struct Project
 {
-    int numberOfCenters;
-    int incineratorsAvailable;
+    int numberCenters;
+    int incinerators;
     int subsidy;
-    int* gatheringCenters;
+    struct Center** listCenters;
 
-} Centers;
+} Project;
+
+typedef struct Center
+{
+    int distance;
+    int ton;
+
+} Center;
+
 
 #endif

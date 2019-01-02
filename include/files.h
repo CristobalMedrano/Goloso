@@ -10,16 +10,17 @@
 #define SAVED 1
 #define ERROR 2
 
-char* getFileName();
 FILE* openFile(const char* fileName);
-Centers* readFile(FILE* currentFile);
-Centers* createCenters();
-int* setGatheringCenters(int* currentList, int pos, int distance, int ton);
-Centers* setNewCenters(Centers* currentCenters, int numberOfCenters, int incineratorsAvailable, int subsidy, int* gatheringCenters);
+Project* readFile(FILE* currentFile);
+Project* createProject();
+Center** createListCenters(int numberCenters);
+Center* createCenter();
+Center* setNewCenter(Center* currentCenter, int distance, int ton);
+void showListCenters(Center** currentListCenters, int numberCenters);
+Project* setNewProject(Project* currentProject, int numberCenters, int incinerators, int subsidy, Center** currentListCenters);
 int closeFile(FILE* file, const char* fileName);
-Centers* getCenters(const char* inputFile);
-
-void freeCenters(Centers* centers);
+Project* getProject(const char* inputFile);
+void freeProject(Project* project);
 //void saveFile(invHistory* solution);
 
 #endif

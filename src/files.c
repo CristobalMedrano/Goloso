@@ -5,26 +5,6 @@
 #include <files.h>
 #include <utilities.h>
 
-// Obtiene el nombre del archivo ingresado por pantalla.
-char* getFileName()
-{
-    printf("Ingrese el nombre del archivo: ");
-    char    file[256];
-	char*   filename = (char*)malloc(sizeof(char)*256);
-    
-    if (NULL != filename) 
-    {
-        fflush(stdin);
-        scanf("%s", file);
-        fflush(stdin);
-        strcpy(filename, file);
-        return filename;
-    }    
-    printf("Memoria insuficiente: getFileName()\n");
-    printf("Error: readfile.c\n");
-    return NULL;
-}
-
 // Abre un archivo.
 FILE* openFile(const char* fileName)
 {
@@ -40,90 +20,170 @@ FILE* openFile(const char* fileName)
     return NULL;
 }
 
-// Lee el archivo de entrada y guarda los datos en la estructura inv.(ver structs.h para mas detalles)
-// El formato a leer es: Capital disponible, numero de inversiones y cada inversion con su coste/utilidad.
-Centers* readFile(FILE* currentFile)
+Project* readFile(FILE* currentFile)
 {
     if(NULL != currentFile)
     {
-        int numberOfCenters       = 0;
-        int incineratorsAvailable = 0;
-        int subsidy               = 0;
+        int numberCenters   = 0;
+        int incinerators    = 0;
+        int subsidy         = 0;
 
-        fscanf(currentFile, "%d", &numberOfCenters);
-        fscanf(currentFile, "%d", &incineratorsAvailable);
+        fscanf(currentFile, "%d", &numberCenters);
+        fscanf(currentFile, "%d", &incinerators);
         fscanf(currentFile, "%d", &subsidy);
 
-        Centers* newCenters     = createCenters();
-        int* gatheringCenters   = createList(numberOfCenters*2);
+        Project* newProject     = createProject();
+        Center** newListCenters = createListCenters(numberCenters);
 
-        if (NULL != gatheringCenters && NULL != newCenters) 
+        if (NULL != newProject && NULL != newListCenters) 
         {
             int distance    = 0;
             int ton         = 0;
-            int count       = 0;
+            int pos         = 0;
 
-            while(count < numberOfCenters*2)
+            while(pos < numberCenters)
             {
                 fscanf(currentFile, "%d", &distance);
                 fscanf(currentFile, "%d", &ton);
-                gatheringCenters = setGatheringCenters(gatheringCenters, count, distance, ton);
-                count = count + 2;
+                newListCenters[pos] = setNewCenter(newListCenters[pos], distance, ton);
+                pos = pos + 1;
             }
             #ifdef DEBUG
-                showList(gatheringCenters, numberOfCenters*2);
+                showListCenters(newListCenters, numberCenters);
             #endif
 
-            newCenters = setNewCenters(newCenters, numberOfCenters, incineratorsAvailable, subsidy, gatheringCenters);
-            return newCenters;
+            newProject = setNewProject(newProject, numberCenters, incinerators, subsidy, newListCenters);
+            return newProject;
         }
     }
     return NULL;
 }
 
-// Inicia un puntero de inversion.
-Centers* createCenters()
+Project* createProject()
 {
-    Centers* newCenters = (Centers*)malloc(sizeof(Centers));
-    if(NULL != newCenters)
+    Project* newProject = (Project*)malloc(sizeof(Project));
+    if(NULL != newProject)
     {
-        newCenters->numberOfCenters         = 0;
-        newCenters->incineratorsAvailable   = 0;
-        newCenters->subsidy                 = 0;
-        newCenters->gatheringCenters        = NULL;
-        return newCenters;
+        newProject->numberCenters   = 0;
+        newProject->incinerators    = 0;
+        newProject->subsidy         = 0;
+        newProject->listCenters     = NULL;
+        return newProject;
     }
-    printf("Memoria insuficiente: createCenters()\n");
+    printf("Memoria insuficiente: createProject()\n");
     printf("Error: files.c\n");
     return NULL;
 }
 
-int* setGatheringCenters(int* currentList, int pos, int distance, int ton)
+/*
+    Entrada: cantidad de centros de acopio.
+    Procedimiento: crea una lista vacia de centros de acopio.
+    Salida: lista preparada para recibir datos de los centros de acopio.
+*/
+Center** createListCenters(int numberCenters)
 {
-    if (NULL != currentList && pos >= 0) 
+    Center** newListCenters = (Center**)malloc(sizeof(Center*)*(numberCenters));
+    
+    if (NULL != newListCenters) 
     {
-        currentList[pos]        = distance;
-        currentList[pos + 1]    = ton;
-        return currentList;
+        int i = 0;
+        for(i = 0; i < numberCenters; i++)
+        {               
+            Center* newCenter = createCenter();
+            
+            if (NULL == newCenter) 
+            {
+                printf("Memoria insuficiente: createListCenters()\n");
+                printf("Error: files.c\n");
+                return NULL;
+            }
+            
+            newListCenters[i] = newCenter;
+        }
+        return newListCenters;
     }
-    return currentList;
+    printf("Memoria insuficiente: createListCenters()\n");
+    printf("Error: files.c\n");
+    return NULL;
 }
 
-// Guarda los nuevos centros.
-Centers* setNewCenters(Centers* currentCenters, int numberOfCenters, int incineratorsAvailable, int subsidy, int* gatheringCenters)
+/*
+    Entrada: vacia
+    Procedimiento: Crea un nuevo centro
+    Salida: El centro ya creado.
+*/
+Center* createCenter()
 {
-    if (NULL != currentCenters) 
+    Center* newCenter = (Center*)malloc(sizeof(Center));
+    if (NULL != newCenter) 
     {
-        currentCenters->numberOfCenters         = numberOfCenters;
-        currentCenters->incineratorsAvailable   = incineratorsAvailable;
-        currentCenters->subsidy                 = subsidy;
-        currentCenters->gatheringCenters        = gatheringCenters;
-        return currentCenters;
+        newCenter->distance = 0;
+        newCenter->ton      = 0;
+        return newCenter;
     }
-    return currentCenters;
+    printf("Memoria insuficiente: createCenter()\n");
+    printf("Error: files.c\n");
+    return NULL;
 }
 
-// Cierra un archivo.
+/*
+    Entrada: centro actual, distancia y toneladas
+    Procedimiento: guarda los datos en el centro actual
+    Salida: el centro actualizado, nulo si no fue posible actualizar.
+*/
+Center* setNewCenter(Center* currentCenter, int distance, int ton)
+{   
+    if (NULL != currentCenter) 
+    {
+        currentCenter->distance = distance;
+        currentCenter->ton      = ton;
+        return currentCenter;    
+    }
+    return NULL;   
+}
+
+/*
+    Entrada: lista de centros, cantidad de centros.
+    Procedimiento: Muestra los datos almacenados de cada centro.
+*/
+void showListCenters(Center** currentListCenters, int numberCenters)
+{
+    if (NULL != currentListCenters) 
+    {
+        int i = 0;
+        for(i = 0; i < numberCenters; i++)
+        {
+            printf("Center: %d, Distance: %d, Ton: %d\n",
+                i, currentListCenters[i]->distance, currentListCenters[i]->ton);
+        }
+        
+    }
+    
+}
+
+/*
+    Entrada: puntero al proyecto actual, numero de centros, incineradores disponibles, subsidio, lista de centros
+    Procedimiento: guarda los datos en la estructura Project.
+    Salida: puntero a la estructura Project con los datos del proyecto en curso. Nulo si no fue posible guardar.
+*/
+Project* setNewProject(Project* currentProject, int numberCenters, int incinerators, int subsidy, Center** currentListCenters)
+{
+    if (NULL != currentProject) 
+    {
+        currentProject->numberCenters   = numberCenters;
+        currentProject->incinerators    = incinerators;
+        currentProject->subsidy         = subsidy;
+        currentProject->listCenters     = currentListCenters;
+        return currentProject;
+    }
+    return NULL;
+}
+
+/*
+    Entrada: Puntero de tipo FILE donde esta el archivo, nombre del archivo
+    Procedimiento: Cierra el archivo.
+    Salida: 0 si fue correcto, 1 si fue incorrecto.
+*/
 int closeFile(FILE* file, const char* fileName)
 {
     if (NULL != file && NULL != fileName) 
@@ -140,32 +200,31 @@ int closeFile(FILE* file, const char* fileName)
     return ERROR_CLOSE;
 }
 /*
-    Entrada: Vacia
+    Entrada: Puntero al nombre del archivo.
     Procedimiento: Inicia la lectura del archivo
-    Salida: Estructura de datos que contiene el capital inicial,
-            el numero de inversiones y la lista de inversiones a
-            realizar con sus respectivas utilidades.
+    Salida: Estructura que contiene el numero de centros, incineradores, subdidio y lista de centros.
+            Nulo si no fue posible leer el archivo.
 */
-Centers* getCenters(const char* inputFile)
+Project* getProject(const char* inputFile)
 {
     if(NULL != inputFile)
     {
         FILE* currentFile = openFile(inputFile);
         if(NULL != currentFile)
         {
-            Centers* newCenters = readFile(currentFile);
-            if(NULL != newCenters)
+            Project* newProject = readFile(currentFile);
+            if(NULL != newProject)
             {
                 int status = closeFile(currentFile, inputFile);
                 if(SUCCESS == status)
                 {
                     printf("\nArchivo cargado correctamente.\n");
-                    return newCenters;
+                    return newProject;
                 }
                 #ifdef DEBUG
                     printf("No es posible cerrar el archivo '%s'\n", inputFile);
                 #endif
-                freeCenters(newCenters);
+                freeProject(newProject);
             }
             #ifdef DEBUG
                 printf("No es posible leer un listado de inversiones\n");
@@ -179,15 +238,15 @@ Centers* getCenters(const char* inputFile)
 }
 
 // Libera la memoria usada 
-void freeCenters(Centers* centers)
+void freeProject(Project* project)
 {
-    if (NULL != centers) 
+    if (NULL != project) 
     {
-        if (NULL != centers->gatheringCenters) 
+        if (NULL != project->listCenters) 
         {
-            free(centers->gatheringCenters);
+            free(project->listCenters);
         }
-        free(centers);
+        free(project);
     }
 }
 

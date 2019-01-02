@@ -50,19 +50,13 @@ void mainMenu(const char* inputFile, const char* outputFile)
 void initProgram(const char* inputFile, const char* outputFile)
 {
     // Obtiene los datos del archivo de entrada.
-    Centers* newCenters = getCenters(inputFile);
+    Project* newProject = getProject(inputFile);
     
-    if (NULL != newCenters) 
+    if (NULL != newProject) 
     {
-        /*
-        printf("nCenters: %d\nInc: %d\nsub: %d\n", newCenters->numberOfCenters, newCenters->incineratorsAvailable, newCenters->subsidy);
-    
-        for(int i = 0; i < (newCenters->numberOfCenters)*2; i++)
-        {
-            printf("D: %d - T: %d\n", newCenters->gatheringCenters[i], newCenters->gatheringCenters[i+1]);
-            i++;
-        }
-        */
+            
+        // Matriz de adyacencia
+        
         // Read file..
     }    
 }
