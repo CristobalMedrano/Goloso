@@ -244,6 +244,11 @@ void freeProject(Project* project)
     {
         if (NULL != project->listCenters) 
         {
+            int i = 0;
+            for(i = 0; i < project->numberCenters; i++)
+            {
+                free(project->listCenters[i]);
+            }
             free(project->listCenters);
         }
         free(project);

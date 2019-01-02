@@ -54,9 +54,9 @@ void initProgram(const char* inputFile, const char* outputFile)
     
     if (NULL != newProject) 
     {
-            
         // Matriz de adyacencia
         
         // Read file..
     }    
+    freeProject(newProject);
 }
