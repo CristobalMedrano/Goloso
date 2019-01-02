@@ -15,7 +15,7 @@ Project* readFile(FILE* currentFile);
 Project* createProject();
 Center** createListCenters(int numberCenters);
 Center* createCenter();
-Center* setNewCenter(Center* currentCenter, int distance, int ton);
+Center* setNewCenter(Center* currentCenter, int distance, int ton, int cost);
 void showListCenters(Center** currentListCenters, int numberCenters);
 Project* setNewProject(Project* currentProject, int numberCenters, int incinerators, int subsidy, Center** currentListCenters);
 int closeFile(FILE* file, const char* fileName);

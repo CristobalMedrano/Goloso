@@ -18,5 +18,15 @@ typedef struct Center
 
 } Center;
 
+typedef struct Move
+{
+    int origin;
+    int destiny;
+    int ton;
+    int cost;
+    
+} Move;
+
+
 
 #endif
