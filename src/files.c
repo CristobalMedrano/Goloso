@@ -45,7 +45,7 @@ Project* readFile(FILE* currentFile)
             {
                 fscanf(currentFile, "%d", &distance);
                 fscanf(currentFile, "%d", &ton);
-                newListCenters[pos] = setNewCenter(newListCenters[pos], distance, ton);
+                newListCenters[pos] = setNewCenter(newListCenters[pos], distance, ton, 0);
                 pos = pos + 1;
             }
             #ifdef DEBUG
@@ -119,6 +119,7 @@ Center* createCenter()
     {
         newCenter->distance = 0;
         newCenter->ton      = 0;
+        newCenter->cost     = 0;
         return newCenter;
     }
     printf("Memoria insuficiente: createCenter()\n");
@@ -131,12 +132,13 @@ Center* createCenter()
     Procedimiento: guarda los datos en el centro actual
     Salida: el centro actualizado, nulo si no fue posible actualizar.
 */
-Center* setNewCenter(Center* currentCenter, int distance, int ton)
+Center* setNewCenter(Center* currentCenter, int distance, int ton, int cost)
 {   
     if (NULL != currentCenter) 
     {
         currentCenter->distance = distance;
         currentCenter->ton      = ton;
+        currentCenter->cost     = cost;
         return currentCenter;    
     }
     return NULL;   

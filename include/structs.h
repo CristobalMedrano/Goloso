@@ -14,6 +14,7 @@ typedef struct Center
 {
     int distance;
     int ton;
+    int cost;
 
 } Center;
 
