@@ -6,6 +6,7 @@ Project* setNewProject(Project* currentProject, int numberCenters, int incinerat
 Center** createListCenters(int numberCenters);
 Center* createCenter();
 Center* setNewCenter(Center* currentCenter, int distance, int ton, int cost);
+Project* updateProject(Project* currentProject, Move* currentMove);
 void showListCenters(Center** currentListCenters, int numberCenters);
 void freeProject(Project* project);
 

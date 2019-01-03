@@ -33,14 +33,15 @@ Move* createMove()
 
 Move** addMoveToList(Move** currentList, int* large, Move* currentMove)
 {
+    Move** newList = NULL;
     if (NULL != currentList) 
     {
         *large = *large + 1;
-        currentList = (Move**)realloc(currentList, sizeof(Move*)*(*large));
-        if (NULL != currentList) 
+        newList = (Move**)realloc(currentList, (*large)*sizeof(Move*));
+        if (NULL != newList)
         {
-            currentList[*large - 2] = currentMove;
-            return currentList;
+            newList[*large - 2] = currentMove;
+            return newList;
         }
         return NULL;
     }
@@ -131,9 +132,7 @@ void showListMove(Move** currentListMove, int large)
             printf("destiny: %d", currentListMove[i]->destiny);
             printf("ton: %d", currentListMove[i]->ton);
         }
-        
     }
-    
 }
 
 void freeListMove(Move** currentListMove, int large)

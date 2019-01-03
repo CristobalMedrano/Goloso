@@ -107,6 +107,17 @@ Center* setNewCenter(Center* currentCenter, int distance, int ton, int cost)
     return NULL;   
 }
 
+Project* updateProject(Project* currentProject, Move* currentMove)
+{
+    if (NULL != currentProject && NULL != currentMove) 
+    {
+        // Debe quitar el movimiento realizado.
+        // Debe añadir el nuevo movimiento.
+        return currentProject;
+    }   
+    return NULL; 
+}
+
 /*
     Entrada: lista de centros, cantidad de centros.
     Procedimiento: Muestra los datos almacenados de cada centro.

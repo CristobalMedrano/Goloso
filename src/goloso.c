@@ -58,8 +58,6 @@ void initProgram(const char* inputFile, const char* outputFile)
     if (NULL != newProject) 
     {
         Move** solution = goloso(newProject);
-
-
     }    
     freeProject(newProject);
 }
@@ -79,7 +77,12 @@ Move** goloso(Project* currentProject)
     if (NULL != newListMove)
     {
         Move* bestMinCostCenter = getMinMove(currentProject);
-        newListMove = addMoveToList(newListMove, &large, bestMinCostCenter);      
+        if (NULL != bestMinCostCenter) 
+        {
+            newListMove = addMoveToList(newListMove, &large, bestMinCostCenter);
+        }
+        currentProject = updateProject(currentProject, bestMinCostCenter);
+        
         showListMove(newListMove, large);
     }
     freeListMove(newListMove, large);
