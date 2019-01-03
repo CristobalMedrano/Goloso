@@ -57,76 +57,36 @@ void initProgram(const char* inputFile, const char* outputFile)
     
     if (NULL != newProject) 
     {
+        Move** solution = goloso(newProject);
 
-        Center* bestMinCostCenter = getMinCostCenterToMove(newProject);
-        
 
-        /*float coste1 = getCurrentCost(newProject->listCenters[0], subsidy, newProject->listCenters[1]->distance);
-        float coste2 = getCurrentCost(newProject->listCenters[0], subsidy, newProject->listCenters[2]->distance);
-        float coste3 = getCurrentCost(newProject->listCenters[0], subsidy, newProject->listCenters[3]->distance);
-        printf("coste1: %.2f\n", coste1);
-        printf("coste2: %.2f\n", coste2);
-        printf("coste3: %.2f\n", coste3);
-        float coste4 = getCurrentCost(newProject->listCenters[1], subsidy, newProject->listCenters[0]->distance);
-        float coste5 = getCurrentCost(newProject->listCenters[1], subsidy, newProject->listCenters[2]->distance);
-        float coste6 = getCurrentCost(newProject->listCenters[1], subsidy, newProject->listCenters[3]->distance);
-        printf("coste4: %.2f\n", coste4);
-        printf("coste5: %.2f\n", coste5);
-        printf("coste6: %.2f\n", coste6);
-        float coste7 = getCurrentCost(newProject->listCenters[2], subsidy, newProject->listCenters[0]->distance);
-        float coste8 = getCurrentCost(newProject->listCenters[2], subsidy, newProject->listCenters[1]->distance);
-        float coste9 = getCurrentCost(newProject->listCenters[2], subsidy, newProject->listCenters[3]->distance);
-        printf("coste7: %.2f\n", coste7);
-        printf("coste8: %.2f\n", coste8);
-        printf("coste9: %.2f\n", coste9);
-        float coste10 = getCurrentCost(newProject->listCenters[3], subsidy, newProject->listCenters[0]->distance);
-        float coste11 = getCurrentCost(newProject->listCenters[3], subsidy, newProject->listCenters[1]->distance);
-        float coste12 = getCurrentCost(newProject->listCenters[3], subsidy, newProject->listCenters[2]->distance);
-        printf("coste10: %.2f\n", coste10);
-        printf("coste11: %.2f\n", coste11);
-        printf("coste12: %.2f\n", coste12);*/
     }    
     freeProject(newProject);
 }
 
-Center* getMinCostCenterToMove(Project* currentProject)
-{
-    int subsidy = currentProject->subsidy;
-    int numberCenters = currentProject->numberCenters;
-    int i = 0;
-    int j = 0;
-    Center** listCenters = currentProject->listCenters;
-    float minCost = (float)INFINITY;
-    for(i = 0; i < numberCenters; i++)
-    {   
-        for(j = 0; j < numberCenters; j++)
-        {
-            if (i != j) 
-            {
-                float currentCost = getCurrentCost(listCenters[i], subsidy, listCenters[j]->distance);
+/*
+    Entrada: Estructura del tipo Project que contiene los datos del mapa de recoleccion
+    Procedimiento: Se selecciona el mejor movimiento segun el de menor coste de traslado,
+    se quita el movimiento y se actualiza el mapa de recoleccion(Project), finalmente
+    se anade a la lista de movimientos.
+    Salida: Lista que contiene todos los movimientos realizados en la recoleccion.
 
-                if (minCost > currentCost) 
-                {
-                    minCost = currentCost;
-                }
-                
-            }
-            
-        }
-        
-    }
-    printf("min: %f", minCost);
-}
-
-float getCurrentCost(Center* originCenter, int subsidy, int destinyDistance)
+*/
+Move** goloso(Project* currentProject)
 {
-    if (NULL != originCenter) 
+    int large = 1;
+    Move** newListMove = createListMove(large);
+    if (NULL != newListMove)
     {
-        int originDistance = originCenter->distance;
-        int ton            = originCenter->ton;
-        float newCost = abs(originDistance-destinyDistance)*(ton - (ton/(float)(subsidy)));
-        return newCost;
+        Move* bestMinCostCenter = getMinMove(currentProject);
+        newListMove = addMoveToList(newListMove, &large, bestMinCostCenter);      
+        showListMove(newListMove, large);
     }
-    return -1;
+    freeListMove(newListMove, large);
+    return NULL;
 }
+
+
+
+
 

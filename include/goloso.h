@@ -12,5 +12,5 @@
 void mainMenu(const char* inputFile, const char* outputFile);
 void initProgram(const char* inputFile, const char* outputFile);
 float getCurrentCost(Center* originCenter, int subsidy, int destinyDistance);
-Center* getMinCostCenterToMove(Project* currentProject);
+Move** goloso(Project* currentProject);
 #endif
