@@ -57,38 +57,83 @@ void initProgram(const char* inputFile, const char* outputFile)
     
     if (NULL != newProject) 
     {
-        Move** solution = goloso(newProject);
+        printf("Iniciando solucion...\n");
+        #ifdef DEBUG
+            showProject(newProject);
+        #endif
+
+        int numberCenters   = newProject->numberCenters;
+        int incinerators    = newProject->incinerators;
+        int movements       = numberCenters - incinerators;
+        
+        if (movements > 0) 
+        {
+            Move** solution = goloso(newProject, movements);
+            
+            if (NULL != solution) 
+            {
+                printf("Solucion encontrada.\n");
+               
+                #ifdef DEBUG
+                    showListMove(solution, movements);
+                    showProject(newProject);
+                #endif
+                
+                // guardo
+                saveFile(solution, movements, newProject, outputFile);
+                freeListMove(solution, movements);
+            }           
+        }
+        // guardo
     }    
     freeProject(newProject);
 }
 
 /*
-    Entrada: Estructura del tipo Project que contiene los datos del mapa de recoleccion
+    Entrada: Estructura del tipo Project que contiene los datos del mapa de recoleccion, 
+            entero con los movimientos a realizar.
+    
     Procedimiento: Se selecciona el mejor movimiento segun el de menor coste de traslado,
-    se quita el movimiento y se actualiza el mapa de recoleccion(Project), finalmente
-    se anade a la lista de movimientos.
+            se anade a la lista de movimientos, luego se quita el centro que se traslada y se 
+            actualiza el mapa de recoleccion(Project)
+    
     Salida: Lista que contiene todos los movimientos realizados en la recoleccion.
 
 */
-Move** goloso(Project* currentProject)
+Move** goloso(Project* currentProject, int movements)
 {
-    int movements = abs(currentProject->numberCenters - currentProject->incinerators);
-    Move** newListMove = createListMove(movements);
-    if (NULL != newListMove)
+    Move** newListMove  = createListMove(movements);
+    
+    int i = 0;
+    while(currentProject->numberCenters > currentProject->incinerators)
     {
-        int i = 0;
-        Move* minMove = getMinMove(currentProject);
-        if (NULL != minMove) 
+        if (NULL != newListMove)
         {
-            newListMove[i] = setMove(newListMove[i], minMove->origin, minMove->destiny, minMove->ton, minMove->cost);
-            freeMove(minMove);
+            Move* minMove = getMinMove(currentProject);
+            
+            if (NULL != minMove) 
+            {
+                printCurrent(minMove);
+                newListMove[i] = setMove(newListMove[i], minMove->origin, minMove->destiny, minMove->ton, minMove->cost);
+                freeMove(minMove);
+                
+                // updateProject quita el centro de inicio y actualiza el centro de llegada
+                currentProject = updateProject(currentProject, newListMove[i]);
+            }
         }
-        currentProject = updateProject(currentProject, newListMove[i]);
-        showProject(currentProject);
-        showListMove(newListMove, movements);
+        i++;
     }
-    freeListMove(newListMove, movements);
-    return NULL;
+    return newListMove;
+}
+
+void printCurrent(Move* currentMove)
+{
+    #ifdef DEBUG
+        printf("Mover desde %d -> %d\n", currentMove->origin, currentMove->destiny);
+        printf("Coste de traslado: %.2f\n", currentMove->cost);
+        printf("Toneladas a mover: %d\n", currentMove->ton );
+        pressToContinue();
+    #endif
 }
 
 

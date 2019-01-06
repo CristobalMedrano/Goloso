@@ -117,11 +117,6 @@ Move* getMinMove(Project* currentProject)
         newMove = setMove(newMove, origin, destiny, ton, minCost);
         return newMove;
     } 
-/* esto podria ser print current
-    printf("min: %.2f", newMove->cost);
-    printf("origin: %d", newMove->origin);
-    printf("destiny: %d", newMove->destiny);
-    printf("ton: %d", newMove->ton);*/
     return NULL;
 }
 
@@ -131,7 +126,15 @@ float getCurrentCost(Center* originCenter, int subsidy, int destinyDistance)
     {
         int originDistance = originCenter->distance;
         int ton            = originCenter->ton;
-        float newCost = abs(originDistance-destinyDistance)*(ton - (ton/(float)(subsidy)));
+        int distanceE      = abs(originDistance-destinyDistance);
+        float newCost      = (distanceE)*(ton - (ton/(float)(subsidy)));
+
+        /*
+            Este calculo obtiene costo, si es que dos centros estan a igual distancia desde el centro.
+            int distanceXY     = sqrt(pow(originDistance, 2)+pow(destinyDistance, 2));
+            float newCost      = (distanceXY)*(ton - (ton/(float)(subsidy)));
+        */
+
         return newCost;
     }
     return -1;
@@ -142,12 +145,12 @@ void showListMove(Move** currentListMove, int movements)
     if (NULL != currentListMove && movements >= 0) 
     {
         int i = 0;
-        for(i = 0; i < movements - 1; i++)
+        for(i = 0; i < movements; i++)
         {
-            printf("min: %.2f", currentListMove[i]->cost);
-            printf("origin: %d", currentListMove[i]->origin);
-            printf("destiny: %d", currentListMove[i]->destiny);
-            printf("ton: %d", currentListMove[i]->ton);
+            printf("cost: %.2f\n", currentListMove[i]->cost);
+            printf("origin: %d\n", currentListMove[i]->origin);
+            printf("destiny: %d\n", currentListMove[i]->destiny);
+            printf("ton: %d\n\n", currentListMove[i]->ton);
         }
     }
 }

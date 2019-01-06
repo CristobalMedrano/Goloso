@@ -46,7 +46,7 @@ Project* readFile(FILE* currentFile)
             {
                 fscanf(currentFile, "%d", &distance);
                 fscanf(currentFile, "%d", &ton);
-                newListCenters[pos] = setNewCenter(newListCenters[pos], distance, ton, 0);
+                newListCenters[pos] = setNewCenter(newListCenters[pos], distance, ton);
                 pos = pos + 1;
             }
             #ifdef DEBUG
@@ -99,7 +99,7 @@ Project* getProject(const char* inputFile)
                 int status = closeFile(currentFile, inputFile);
                 if(SUCCESS == status)
                 {
-                    printf("\nArchivo cargado correctamente.\n");
+                    printf("\nArchivo '%s' cargado correctamente.\n", inputFile);
                     return newProject;
                 }
                 #ifdef DEBUG
@@ -119,9 +119,8 @@ Project* getProject(const char* inputFile)
 }
 
 
-// Guarda los datos obtenidos previamente por invHistory en un archivo de salida
-// El formato es: Capital usado - Utilidad total obtenida y la lista de inversiones que se realizaron.
-/*void saveFile(invHistory* solution)
+// Guarda los datos obtenidos previamente en un archivo de salida
+void saveFile(Move** solution, int movements, Project* finalProject, const char* outputFile)
 {
     if (NULL != solution) 
     {
@@ -129,24 +128,27 @@ Project* getProject(const char* inputFile)
 
         if (NULL != newFile) 
         {
-            fprintf(newFile, "%d ", solution->capital);
-            fprintf(newFile, "%d\n", solution->utility);
-            
-            
-            if (NULL != solution->details) 
+            float cost = 0;
+            if (movements > 0) 
             {
                 int i = 0;
-                for(i = 0; i < solution->length; i++)
+                for(i = 0; i < movements; i++)
                 {
-                    fprintf(newFile, "%d\n", solution->details[i]);
+                    fprintf(newFile, "%d->%d\n", solution[i]->origin, solution[i]->destiny);
+                    cost = solution[i]->cost + cost;
                 }
             }
-            else
+            int j = 0;
+            
+            for(j = 0; j < finalProject->numberCenters; j++)
             {
-                fprintf(newFile, "No es posible invertir.");
+                fprintf(newFile, "Centro %d: %d toneladas\n", finalProject->listCenters[j]->distance,
+                                                            finalProject->listCenters[j]->ton);
             }
-            printf("Archivo solucion creado correctamente.\n");      
-            closeFile(newFile, "Salida.out"); 
+            
+            fprintf(newFile, "Costo: %.2f", cost);
+            printf("Archivo '%s' creado correctamente.\n", outputFile);      
+            closeFile(newFile, outputFile); 
         } 
     }
-}*/
+}

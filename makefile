@@ -1,8 +1,9 @@
-#Version 0.7.0 - 31-12-2018
+#Version 0.7.2 - 31-12-2018
 #Makefile for Windows and Linux developed by Cristobal Medrano Alvarado.
 #Makefile para Windows y Linux desarrollado por Cristobal Medrano Alvardo.
 
 # Archivo main para funcion principal, archivos de salida en build.
+# Se anade libreria math.
 
 #The operating system is checked.
 #Se verifica el sistema operativo.
@@ -42,9 +43,9 @@ BUILD = build
 
 #Variables
 CC = gcc
-HDRS = $(HEADERS)/
+HDRS = -I $(HEADERS)/
 BLDS = $(BUILD)/
-OPTS = -Wall -g3 -I
+OPTS = -Wall -g3
 DEBUG = -D DEBUG
 
 SRCS = $(wildcard $(SOURCES)/*.c)
@@ -58,7 +59,7 @@ all: $(EXECUTABLE)
 
 # Normal compilation
 $(EXECUTABLE): $(OBJS) $(BUILD)/$(MAIN).o
-	$(CC) -o $@ $^ 
+	$(CC) -o $@ $^ -lm
 	echo Compilation done. Executable: $(EXECUTE)
 
 $(BUILD)/%.o: $(SOURCES)/%.c
@@ -72,7 +73,7 @@ $(BUILD)/$(MAIN).o: $(MAIN).c
 debug: debug_$(EXECUTABLE)
 
 debug_$(EXECUTABLE): $(DOBJS) $(BUILD)/$(DMAIN).o
-	$(CC) -o $@ $^ 
+	$(CC) -o $@ $^ -lm
 	echo Compilation done. Executable: $(DEBUGEXECUTE)
 
 $(BUILD)/%_debug.o: $(SOURCES)/%.c

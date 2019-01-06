@@ -109,18 +109,15 @@ Project* updateProject(Project* currentProject, Move* currentMove)
 {
     if (NULL != currentProject && NULL != currentMove) 
     {
-        // Debe quitar el movimiento realizado del proyecto
         Center** newListCenter = updatedListCenter(currentProject->numberCenters, currentProject->listCenters, currentMove);
-        
+
         if (NULL != newListCenter) 
         {
-            showListCenters(newListCenter, currentProject->numberCenters-1);
-            freeListCenter(newListCenter, currentProject->numberCenters-1);
+            freeListCenter(currentProject->listCenters, currentProject->numberCenters);
+            currentProject->numberCenters = currentProject->numberCenters - 1;  
+            currentProject->listCenters = newListCenter;
+            return currentProject;
         }
-        
-        //currentProject->listCenters = 
-        // Debe añadir el nuevo movimiento.
-        return currentProject;
     }   
     return NULL; 
 }

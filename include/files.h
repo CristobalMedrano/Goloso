@@ -14,6 +14,6 @@ FILE* openFile(const char* fileName);
 Project* readFile(FILE* currentFile);
 int closeFile(FILE* file, const char* fileName);
 Project* getProject(const char* inputFile);
-//void saveFile(invHistory* solution);
+void saveFile(Move** solution, int movements, Project* finalProject, const char* outputFile);
 
 #endif
