@@ -4,6 +4,7 @@
 #include <structs.h>
 #include <move.h>
 
+// Funcion que crea una lista de movimientos, a partir de los movimientos por realizar.
 Move** createListMove(int movements)
 {
     if (movements > 0) 
@@ -33,6 +34,7 @@ Move** createListMove(int movements)
     return NULL;
 }
 
+// funcion que crea un movimiento
 Move* createMove()
 {
     Move* newMove = (Move*)malloc(sizeof(Move));
@@ -48,6 +50,8 @@ Move* createMove()
     return NULL;
 }
 
+// funcion que a partir de una lista de movimientos, movimientos por realizar y un movimiento actual.
+// agrega el movimiento actual a la lista de movimientos.
 Move** addMoveToList(Move** currentList, int* movements, Move* currentMove)
 {
     Move** newList = NULL;
@@ -65,6 +69,7 @@ Move** addMoveToList(Move** currentList, int* movements, Move* currentMove)
     return NULL;
 }
 
+// funcion que guarda datos en un movimiento.
 Move* setMove(Move* currentMove, int origin, int destiny, int ton, float cost)
 {
     if (NULL != currentMove)
@@ -78,6 +83,13 @@ Move* setMove(Move* currentMove, int origin, int destiny, int ton, float cost)
     return NULL;
 }
 
+/*
+    Entrada: plano del traslado actual (project)
+    Procedimiento: cada centro se compara con los otros centros, es decir se compara el primer centro con el segundo, tercero, ...
+    .. hasta el ultimo y esto se repite hasta que se comparen todos los centros. En cada iteracion se calcula el costo de traslado
+    y solo se guarda la que al final de verificar todas las combinaciones del momento es la menor.
+    Salida: entrega el tipo de dato movimiento(ver en structs.h) que contiene el centro de origen, destino, toneladas a mover y coste.
+*/
 Move* getMinMove(Project* currentProject)
 {
     Center** listCenters    = currentProject->listCenters;
@@ -120,6 +132,7 @@ Move* getMinMove(Project* currentProject)
     return NULL;
 }
 
+// Funcion que calcula el coste de traslado segun el enunciado.
 float getCurrentCost(Center* originCenter, int subsidy, int destinyDistance)
 {
     if (NULL != originCenter) 

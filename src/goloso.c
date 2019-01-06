@@ -96,11 +96,12 @@ void initProgram(const char* inputFile, const char* outputFile)
     Entrada: Estructura del tipo Project que contiene los datos del mapa de recoleccion, 
             entero con los movimientos a realizar.
     
-    Procedimiento: Se selecciona el mejor movimiento segun el de menor coste de traslado,
-            se anade a la lista de movimientos, luego se quita el centro que se traslada y se 
-            actualiza el mapa de recoleccion(Project)
+    Procedimiento: Se selecciona el mejor movimiento segun el menor coste de traslado y
+            se anade a la lista de movimientos, luego se quita el centro trasladado del plano de 
+            recoleccion actual( currentProject ) y se actualiza el mapa de recoleccion(Project) con
+            el nuevo centro actualizado (el centro que recibio la carga).
     
-    Salida: Lista que contiene todos los movimientos realizados en la recoleccion.
+    Salida: Lista que contiene todos los movimientos de minimo coste realizados en la recoleccion.
 
 */
 Move** goloso(Project* currentProject, int movements)
@@ -117,6 +118,7 @@ Move** goloso(Project* currentProject, int movements)
             if (NULL != minMove) 
             {
                 printCurrent(minMove);
+                // agrega el movimiento realizado a la lista de movimientos.
                 newListMove[i] = setMove(newListMove[i], minMove->origin, minMove->destiny, minMove->ton, minMove->cost);
                 freeMove(minMove);
                 
@@ -129,6 +131,11 @@ Move** goloso(Project* currentProject, int movements)
     return newListMove;
 }
 
+// A partir del tipo de dato Move (ver en structs.h) muestra los datos de aquel puntero. 
+//    - origen de la carga (centro de origen) origin
+//    - destino de la carga (centro de destino) destiny
+//    - coste de transporte (cost)
+//    - toneladas a mover (ton)
 void printCurrent(Move* currentMove)
 {
     #ifdef DEBUG

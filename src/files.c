@@ -21,6 +21,9 @@ FILE* openFile(const char* fileName)
     return NULL;
 }
 
+/*
+    Funcion que lee los datos desde el archivo y crea un tipo de dato project para guardar.
+*/
 Project* readFile(FILE* currentFile)
 {
     if(NULL != currentFile)

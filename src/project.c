@@ -3,6 +3,9 @@
 #include <structs.h>
 #include <project.h>
 
+/*
+    Crea un tipo de dato project.
+*/
 Project* createProject()
 {
     Project* newProject = (Project*)malloc(sizeof(Project));
@@ -105,6 +108,13 @@ Center* setNewCenter(Center* currentCenter, int distance, int ton)
     return NULL;   
 }
 
+/*
+    Entrada: tipo de dato project que contiene los datos actuales del plan de limpieza(ver en structs.h)
+             Movimiento actual realizado.
+    Procedimiento: Quita el centro que fue trasladado, actualiza la cantidad de centros disponibles en project y anade
+                   o actualiza el centro de llegada.
+    Salida: tipo de dato project con los nuevos centros y datos actualizados.  
+*/
 Project* updateProject(Project* currentProject, Move* currentMove)
 {
     if (NULL != currentProject && NULL != currentMove) 
@@ -122,6 +132,8 @@ Project* updateProject(Project* currentProject, Move* currentMove)
     return NULL; 
 }
 
+// Funcion encargada de quitar el centro de inicio y actualizar el centro de llegada.
+// devuelve la lista de centros actualizada.
 Center** updatedListCenter(int numberCenters, Center** listCenters, Move* currentMove)
 {
     Center** newListCenter = createListCenters(numberCenters - 1);
@@ -146,6 +158,7 @@ Center** updatedListCenter(int numberCenters, Center** listCenters, Move* curren
     return NULL;
 }
 
+// Funcion que verifica si un centro es igual a un movimiento. (sirve para eliminar el centro trasladado)
 int moveEqualCenter(Move* move, Center* center)
 {
     if (NULL != move && NULL != center) 
