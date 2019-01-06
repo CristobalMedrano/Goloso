@@ -4,15 +4,32 @@
 #include <structs.h>
 #include <move.h>
 
-Move** createListMove()
+Move** createListMove(int movements)
 {
-    Move** newListMove = (Move**)malloc(sizeof(Move*));
-
-    if (NULL != newListMove) 
+    if (movements > 0) 
     {
-        newListMove[0] = NULL;
-        return newListMove;
+        Move** newListMove = (Move**)malloc(sizeof(Move*)*(movements));
+        if (NULL != newListMove) 
+        {
+            int i = 0;
+            for(i = 0; i < movements; i++)
+            {               
+                Move* newMove = createMove();
+                
+                if (NULL == newMove) 
+                {
+                    printf("Memoria insuficiente: createListMove()\n");
+                    printf("Error: move.c\n");
+                    return NULL;
+                }
+                
+                newListMove[i] = newMove;
+            }
+            return newListMove;
+        }
     }
+    printf("Memoria insuficiente: createListMove()\n");
+    printf("Error: move.c\n");
     return NULL;
 }
 
@@ -31,16 +48,16 @@ Move* createMove()
     return NULL;
 }
 
-Move** addMoveToList(Move** currentList, int* large, Move* currentMove)
+Move** addMoveToList(Move** currentList, int* movements, Move* currentMove)
 {
     Move** newList = NULL;
     if (NULL != currentList) 
     {
-        *large = *large + 1;
-        newList = (Move**)realloc(currentList, (*large)*sizeof(Move*));
+        *movements = *movements + 1;
+        newList = (Move**)realloc(currentList, (*movements)*sizeof(Move*));
         if (NULL != newList)
         {
-            newList[*large - 2] = currentMove;
+            newList[*movements - 2] = currentMove;
             return newList;
         }
         return NULL;
@@ -91,7 +108,7 @@ Move* getMinMove(Project* currentProject)
                     {
                         origin  = listCenters[i]->distance;
                         destiny = listCenters[j]->distance;
-                        ton     = listCenters[i]->ton + listCenters[j]->ton;
+                        ton     = listCenters[i]->ton;
                         minCost = currentCost;
                     }   
                 }   
@@ -120,12 +137,12 @@ float getCurrentCost(Center* originCenter, int subsidy, int destinyDistance)
     return -1;
 }
 
-void showListMove(Move** currentListMove, int large)
+void showListMove(Move** currentListMove, int movements)
 {
-    if (NULL != currentListMove && large >= 0) 
+    if (NULL != currentListMove && movements >= 0) 
     {
         int i = 0;
-        for(i = 0; i < large - 1; i++)
+        for(i = 0; i < movements - 1; i++)
         {
             printf("min: %.2f", currentListMove[i]->cost);
             printf("origin: %d", currentListMove[i]->origin);
@@ -135,12 +152,12 @@ void showListMove(Move** currentListMove, int large)
     }
 }
 
-void freeListMove(Move** currentListMove, int large)
+void freeListMove(Move** currentListMove, int movements)
 {
     if (NULL != currentListMove) 
     {
         int i = 0;
-        for(i = 0; i < large; i++)
+        for(i = 0; i < movements; i++)
         {
             freeMove(currentListMove[i]);
         }

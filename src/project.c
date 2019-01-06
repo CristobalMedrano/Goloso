@@ -57,7 +57,7 @@ Center** createListCenters(int numberCenters)
             if (NULL == newCenter) 
             {
                 printf("Memoria insuficiente: createListCenters()\n");
-                printf("Error: files.c\n");
+                printf("Error: project.c\n");
                 return NULL;
             }
             
@@ -66,7 +66,7 @@ Center** createListCenters(int numberCenters)
         return newListCenters;
     }
     printf("Memoria insuficiente: createListCenters()\n");
-    printf("Error: files.c\n");
+    printf("Error: project.c\n");
     return NULL;
 }
 
@@ -82,7 +82,6 @@ Center* createCenter()
     {
         newCenter->distance = 0;
         newCenter->ton      = 0;
-        newCenter->cost     = 0;
         return newCenter;
     }
     printf("Memoria insuficiente: createCenter()\n");
@@ -95,13 +94,12 @@ Center* createCenter()
     Procedimiento: guarda los datos en el centro actual
     Salida: el centro actualizado, nulo si no fue posible actualizar.
 */
-Center* setNewCenter(Center* currentCenter, int distance, int ton, int cost)
+Center* setNewCenter(Center* currentCenter, int distance, int ton)
 {   
     if (NULL != currentCenter) 
     {
         currentCenter->distance = distance;
         currentCenter->ton      = ton;
-        currentCenter->cost     = cost;
         return currentCenter;    
     }
     return NULL;   
@@ -111,12 +109,69 @@ Project* updateProject(Project* currentProject, Move* currentMove)
 {
     if (NULL != currentProject && NULL != currentMove) 
     {
-        // Debe quitar el movimiento realizado.
+        // Debe quitar el movimiento realizado del proyecto
+        Center** newListCenter = updatedListCenter(currentProject->numberCenters, currentProject->listCenters, currentMove);
+        
+        if (NULL != newListCenter) 
+        {
+            showListCenters(newListCenter, currentProject->numberCenters-1);
+            freeListCenter(newListCenter, currentProject->numberCenters-1);
+        }
+        
+        //currentProject->listCenters = 
         // Debe añadir el nuevo movimiento.
         return currentProject;
     }   
     return NULL; 
 }
+
+Center** updatedListCenter(int numberCenters, Center** listCenters, Move* currentMove)
+{
+    Center** newListCenter = createListCenters(numberCenters - 1);
+    if (NULL != listCenters && NULL != newListCenter) 
+    {
+        int i = 0;
+        int j = 0;
+        for(i = 0; i < numberCenters; i++)
+        {
+            if (moveEqualCenter(currentMove, listCenters[i]) == NO) 
+            {
+                newListCenter[j] = setNewCenter(newListCenter[j], listCenters[i]->distance, listCenters[i]->ton);
+                if (newListCenter[j]->distance == currentMove->destiny) 
+                {
+                    newListCenter[j]->ton = newListCenter[j]->ton + currentMove->ton;
+                }
+                j++;
+            }
+        }
+        return newListCenter;
+    }
+    return NULL;
+}
+
+int moveEqualCenter(Move* move, Center* center)
+{
+    if (NULL != move && NULL != center) 
+    {
+        if ((move->origin == center->distance) && (move->ton == center->ton)) 
+        {
+            return YES;
+        }   
+    }
+    return NO;
+}
+
+void showProject(Project* currentProject)
+{
+    if (NULL != currentProject) 
+    {
+        printf("Numero de centros: %d\n", currentProject->numberCenters);
+        printf("Incineradores: %d\n", currentProject->incinerators);
+        printf("Subsidio: %d\n", currentProject->subsidy);
+        showListCenters(currentProject->listCenters, currentProject->numberCenters);
+    }
+}
+
 
 /*
     Entrada: lista de centros, cantidad de centros.
@@ -140,15 +195,28 @@ void freeProject(Project* project)
 {
     if (NULL != project) 
     {
-        if (NULL != project->listCenters) 
-        {
-            int i = 0;
-            for(i = 0; i < project->numberCenters; i++)
-            {
-                free(project->listCenters[i]);
-            }
-            free(project->listCenters);
-        }
+        freeListCenter(project->listCenters, project->numberCenters);
         free(project);
+    }
+}
+
+void freeListCenter(Center** currentListCenter, int numberCenters)
+{
+    if (NULL != currentListCenter) 
+    {
+        int i = 0;
+        for(i = 0; i < numberCenters; i++)
+        {
+            freeCenter(currentListCenter[i]);
+        }
+        free(currentListCenter);
+    }
+}
+
+void freeCenter(Center* currentCenter)
+{
+    if (NULL != currentCenter) 
+    {
+        free(currentCenter);
     }
 }

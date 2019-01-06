@@ -72,22 +72,25 @@ void initProgram(const char* inputFile, const char* outputFile)
 */
 Move** goloso(Project* currentProject)
 {
-    int large = 1;
-    Move** newListMove = createListMove(large);
+    int movements = abs(currentProject->numberCenters - currentProject->incinerators);
+    Move** newListMove = createListMove(movements);
     if (NULL != newListMove)
     {
-        Move* bestMinCostCenter = getMinMove(currentProject);
-        if (NULL != bestMinCostCenter) 
+        int i = 0;
+        Move* minMove = getMinMove(currentProject);
+        if (NULL != minMove) 
         {
-            newListMove = addMoveToList(newListMove, &large, bestMinCostCenter);
+            newListMove[i] = setMove(newListMove[i], minMove->origin, minMove->destiny, minMove->ton, minMove->cost);
+            freeMove(minMove);
         }
-        currentProject = updateProject(currentProject, bestMinCostCenter);
-        
-        showListMove(newListMove, large);
+        currentProject = updateProject(currentProject, newListMove[i]);
+        showProject(currentProject);
+        showListMove(newListMove, movements);
     }
-    freeListMove(newListMove, large);
+    freeListMove(newListMove, movements);
     return NULL;
 }
+
 
 
 
