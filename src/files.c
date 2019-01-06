@@ -122,9 +122,9 @@ Project* getProject(const char* inputFile)
 // Guarda los datos obtenidos previamente en un archivo de salida
 void saveFile(Move** solution, int movements, Project* finalProject, const char* outputFile)
 {
-    if (NULL != solution) 
+    if (NULL != finalProject) 
     {
-        FILE* newFile = fopen("Salida.out", "wb");
+        FILE* newFile = fopen(outputFile, "wb");
 
         if (NULL != newFile) 
         {
@@ -138,6 +138,10 @@ void saveFile(Move** solution, int movements, Project* finalProject, const char*
                     cost = solution[i]->cost + cost;
                 }
             }
+            else
+            {
+                fprintf(newFile, "No hay movimientos por realizar.\n");
+            }
             int j = 0;
             
             for(j = 0; j < finalProject->numberCenters; j++)
@@ -145,7 +149,6 @@ void saveFile(Move** solution, int movements, Project* finalProject, const char*
                 fprintf(newFile, "Centro %d: %d toneladas\n", finalProject->listCenters[j]->distance,
                                                             finalProject->listCenters[j]->ton);
             }
-            
             fprintf(newFile, "Costo: %.2f", cost);
             printf("Archivo '%s' creado correctamente.\n", outputFile);      
             closeFile(newFile, outputFile); 

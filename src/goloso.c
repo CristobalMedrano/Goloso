@@ -84,7 +84,10 @@ void initProgram(const char* inputFile, const char* outputFile)
                 freeListMove(solution, movements);
             }           
         }
-        // guardo
+        else
+        {
+           saveFile(NULL, 0, newProject, outputFile);    
+        }
     }    
     freeProject(newProject);
 }
